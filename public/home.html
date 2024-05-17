@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bill Splitter</title>
+<style>
+    body{
+        background-color: white;
+        margin: 0;
+        padding: 0;
+    }
+
+    @media only screen  and (orientation: portrait) {
+        #header{
+            display: flex;
+            justify-content: center; /* Horizontally center */
+            align-items: center; /* Vertically center */
+            background-color: white;
+            height: 10vh;
+        }
+        #logo{
+            max-width: 100%;
+            max-height: 100%;
+        }
+        #container{
+            display: flex;
+            justify-content: center; /* Horizontally center */
+            align-items: center; /* Vertically center */
+        }
+        #add_bill{
+            background-color: rgb(62, 123, 160);
+            margin: 5vw;
+            height: 10vh;
+            width: 100%;
+        }
+        #add_bill_text{
+            font-size: 10vw;
+            color: white;
+        }
+    }
+</style>
+</head>
+<body>
+
+    <div id = "header">
+        <img id = logo src="Logo_long.jpg">
+    </div>
+
+    <div id = "container">
+        <button id = "add_bill">
+            <div id = "add_bill_text">Adaugă bon</div>
+        </button>
+    </div>
+
+
+<script>
+
+</script>
+</body>
+</html>
