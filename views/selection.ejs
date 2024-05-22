@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Selection</title>
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
+</head>
+<body>
+  <h1>Selection Page</h1>
+  <ul id="items">
+    <% bill.items.forEach(item => { %>
+      <li data-name="<%= item.name %>"><%= item.name %>: $<%= item.price %></li>
+    <% }) %>
+  </ul>
+  <h2>Participants</h2>
+  <ul id="participants">
+    <% participants.forEach(participant => { %>
+      <li style="color: <%= participant.color %>;"><%= participant.name %>: $<%= participant.amount %></li>
+    <% }) %>
+  </ul>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/public/js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bill Creator</title>
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
+</head>
+<body>
+  <h1>Bill Creator</h1>
+  <form action="/bill/add-item" method="post">
+    <label for="name">Item Name:</label>
+    <input type="text" id="name" name="name" required>
+    <label for="price">Item Price:</label>
+    <input type="number" id="price" name="price" required>
+    <button type="submit">Add Item</button>
+  </form>
+  <h2>Items</h2>
+  <ul>
+    <% bill.items.forEach(item => { %>
+      <li><%= item.name %>: $<%= item.price %></li>
+    <% }) %>
+  </ul>
+  <form action="/bill/finish" method="post">
+    <button type="submit">Finish Bill</button>
+  </form>
+</body>
+</html>

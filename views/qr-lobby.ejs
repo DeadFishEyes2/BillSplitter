@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>QR Code Lobby</title>
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
+</head>
+<body>
+  <h1>QR Code Lobby</h1>
+  <img src="<%= qrCodeUrl %>" alt="QR Code">
+  <h2>Participants</h2>
+  <ul id="participants">
+    <% participants.forEach(participant => { %>
+      <li style="color: <%= participant.color %>;"><%= participant.name %></li>
+    <% }) %>
+  </ul>
+  <form action="/bill/join/<%= billId %>" method="post" id="nameForm">
+    <label for="name">Enter your name:</label>
+    <input type="text" id="name" name="name" required>
+    <button type="submit">Join</button>
+  </form>
+  <button id="startSplitting" style="display:none;">Start Splitting</button>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/public/js/script.js"></script>
+</body>
+</html>
