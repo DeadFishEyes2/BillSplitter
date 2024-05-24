@@ -1,23 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Selection</title>
+  <title>Select Items</title>
   <link rel="stylesheet" type="text/css" href="/css/style.css">
+  <script src="/js/selection.js" defer></script>
 </head>
 <body>
-  <h1>Selection Page</h1>
+  <h1>Select Items</h1>
   <ul id="items">
     <% bill.items.forEach(item => { %>
-      <li data-name="<%= item.name %>"><%= item.name %>: $<%= item.price %></li>
+      <li data-item="<%= item.name %>" class="item">
+        <%= item.name %> 
+        <span class="selected-by">
+          <% item.selectedBy.forEach(selection => { %>
+            <span style="color: <%= selection.color %>"><%= selection.name %></span>
+          <% }) %>
+        </span>
+      </li>
     <% }) %>
   </ul>
-  <h2>Participants</h2>
   <ul id="participants">
     <% participants.forEach(participant => { %>
-      <li style="color: <%= participant.color %>;"><%= participant.name %>: $<%= participant.amount %></li>
+      <li style="color: <%= participant.color %>"><%= participant.name %></li>
     <% }) %>
   </ul>
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="/public/js/script.js"></script>
 </body>
 </html>

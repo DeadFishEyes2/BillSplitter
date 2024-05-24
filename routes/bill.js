@@ -1,50 +1,36 @@
 const express = require('express');
 const router = express.Router();
 const QRCode = require('qrcode');
-const { v4: uuidv4 } = require('uuid');
 
 let bills = [];
 let participants = {};
 
-router.get('/new', (req, res) => {
-  const billId = uuidv4();
-  req.session.billId = billId;
-  bills.push({ id: billId, items: [] });
-  res.redirect(`/bill/creator/${billId}`);
+function generateId() {
+  return Math.random().toString(36).substr(2, 9);
+}
+
+router.get('/create', (req, res) => {
+  res.render('bill-creator');
 });
 
-router.get('/creator/:id', (req, res) => {
-  const bill = bills.find(b => b.id === req.params.id);
+router.post('/create', (req, res) => {
+  const { name, items } = req.body;
+  const id = generateId();
+  const newBill = { id, name, items: items.split(',').map(item => ({ name: item.trim(), selectedBy: [] })) };
+  bills.push(newBill);
+  participants[id] = [];
+  res.redirect(`/bill/qr-lobby/${id}`);
+});
+
+router.get('/qr-lobby/:id', async (req, res) => {
+  const billId = req.params.id;
+  const bill = bills.find(b => b.id === billId);
   if (!bill) {
     return res.redirect('/');
   }
-  res.render('bill-creator', { bill });
-});
 
-router.post('/add-item', (req, res) => {
-  const { name, price } = req.body;
-  const bill = bills.find(b => b.id === req.session.billId);
-  if (bill) {
-    bill.items.push({ name, price });
-  }
-  res.redirect(`/bill/creator/${req.session.billId}`);
-});
-
-router.post('/finish', async (req, res) => {
-  const bill = bills.find(b => b.id === req.session.billId);
-  if (!bill) {
-    return res.redirect('/');
-  }
-  const qrCodeUrl = await QRCode.toDataURL(`${req.protocol}://${req.get('host')}/bill/join/${bill.id}`);
-  res.render('qr-lobby', { qrCodeUrl, participants: participants[bill.id] || [], billId: bill.id });
-});
-
-router.get('/join/:id', (req, res) => {
-  const bill = bills.find(b => b.id === req.params.id);
-  if (!bill) {
-    return res.redirect('/');
-  }
-  res.render('qr-lobby', { qrCodeUrl: '', participants: participants[bill.id] || [], billId: bill.id });
+  const qrCodeUrl = await QRCode.toDataURL(`${req.protocol}://${req.get('host')}/bill/join/${billId}`);
+  res.render('qr-lobby', { qrCodeUrl, billId, participants: participants[billId] });
 });
 
 router.post('/join/:id', (req, res) => {
@@ -55,7 +41,7 @@ router.post('/join/:id', (req, res) => {
   }
   const userColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
   participants[billId].push({ name, color: userColor });
-  res.render('qr-lobby', { qrCodeUrl: '', participants: participants[billId], billId });
+  res.redirect(`/bill/qr-lobby/${billId}`);
 });
 
 router.post('/start/:id', (req, res) => {
@@ -65,6 +51,22 @@ router.post('/start/:id', (req, res) => {
     return res.redirect('/');
   }
   res.render('selection', { bill, participants: participants[billId] });
+});
+
+router.post('/select-item/:id', (req, res) => {
+  const billId = req.params.id;
+  const { itemName, userName, userColor } = req.body;
+  const bill = bills.find(b => b.id === billId);
+  if (bill) {
+    const item = bill.items.find(i => i.name === itemName);
+    if (item) {
+      if (!item.selectedBy) {
+        item.selectedBy = [];
+      }
+      item.selectedBy.push({ name: userName, color: userColor });
+    }
+  }
+  res.json({ success: true });
 });
 
 module.exports = router;
